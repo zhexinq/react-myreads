@@ -3,10 +3,12 @@ import * as BooksAPI from './BooksAPI'
 import './App.css'
 import Bookshelf from './Bookshelf'
 import { Route, Link } from 'react-router-dom'
+import SearchBooks from './SearchBooks'
 
 class BooksApp extends React.Component {
   state = {
-    books: []
+    books: [],
+    searchedBooks: []
   }
 
   componentDidMount() {
@@ -18,11 +20,10 @@ class BooksApp extends React.Component {
   }
 
   updateBookShelf = (event, book) => {
-    const options = event.target.options
-    const changedShelf = options[options.selectedIndex].getAttribute('value')
+    const changedShelf = event.target.value
     this.setState( (state) => ({
       books: state.books.map( b => {
-        if (b.id == book.id) {
+        if (b.id === book.id) {
           b.shelf = changedShelf
         }
         return b
@@ -31,30 +32,26 @@ class BooksApp extends React.Component {
     BooksAPI.update(book, changedShelf)
   }
 
+  searchBooks = (query) => {
+    BooksAPI.search(query, 10).then( books => {
+      if (books) {
+        this.setState({
+          searchedBooks: books
+        })
+      } else {
+        console.log('set empty array')
+        this.setState({
+          searchedBooks: []
+        })
+      }
+    })
+  }
+
   render() {
     return (
       <div className="app">
         <Route path="/search" render={ () =>
-          <div className="search-books">
-            <div className="search-books-bar">
-              <Link className="close-search" to="/">Close</Link>
-              <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
-                <input type="text" placeholder="Search by title or author"/>
-
-              </div>
-            </div>
-            <div className="search-books-results">
-              <ol className="books-grid"></ol>
-            </div>
-          </div>
+          <SearchBooks books={this.state.searchedBooks} onUpdateBookShelf={this.updateBookShelf} onSearchBooks={this.searchBooks}/>
         }/>
 
         <Route exact path="/" render={ () =>

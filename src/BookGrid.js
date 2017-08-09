@@ -9,7 +9,7 @@ class BookGrid extends Component {
 
   render() {
     const {books, onUpdateBookShelf} = this.props
-    
+    console.log(books)
     return  (
       <ol className="books-grid">
         {
@@ -19,12 +19,12 @@ class BookGrid extends Component {
                 <div className="book-top">
                   <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
                   <div className="book-shelf-changer">
-                    <select onChange={e => onUpdateBookShelf(e, book)}>
+                    <select onChange={e => onUpdateBookShelf(e, book)} value={book.shelf}>
                       <option value="none" disabled>Move to...</option>
-                      <option value="currentlyReading" selected={book.shelf === 'currentlyReading'}>Currently Reading</option>
-                      <option value="wantToRead" selected={book.shelf === 'wantToRead'}>Want to Read</option>
-                      <option value="read" selected={book.shelf === 'read'}>Read</option>
-                      <option value="none" selected={book.shelf === 'none'}>None</option>
+                      <option value="currentlyReading">Currently Reading</option>
+                      <option value="wantToRead">Want to Read</option>
+                      <option value="read">Read</option>
+                      <option value="none">None</option>
                     </select>
                   </div>
                 </div>
