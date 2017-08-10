@@ -7,9 +7,11 @@ class BookGrid extends Component {
     onUpdateBookShelf: PropTypes.func.isRequired
   }
 
+
+
   render() {
     const {books, onUpdateBookShelf} = this.props
-    console.log(books)
+    
     return  (
       <ol className="books-grid">
         {

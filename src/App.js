@@ -21,14 +21,19 @@ class BooksApp extends React.Component {
 
   updateBookShelf = (event, book) => {
     const changedShelf = event.target.value
-    this.setState( (state) => ({
-      books: state.books.map( b => {
-        if (b.id === book.id) {
-          b.shelf = changedShelf
-        }
-        return b
-      })
-    }))
+    var booksToUpdate = this.state.books
+
+    console.log(changedShelf)
+    console.log(book)
+    booksToUpdate.map( b => {
+      if (b.id === book.id)
+        b.shelf = changedShelf
+    })
+
+    this.setState({
+      books: booksToUpdate
+    })
+
     BooksAPI.update(book, changedShelf)
   }
 
@@ -38,14 +43,28 @@ class BooksApp extends React.Component {
         this.setState({
           searchedBooks: books
         })
+
+        books.map( book => {
+          BooksAPI.get(book.id).then( b => {
+            var searched = this.state.searchedBooks
+            searched.map(search => {
+              if (search.id == b.id)
+                search.shelf = b.shelf
+            })
+            this.setState( state => ({
+              searchedBooks: searched
+            }))
+          })
+        })
       } else {
-        console.log('set empty array')
         this.setState({
           searchedBooks: []
         })
       }
     })
   }
+
+
 
   render() {
     return (
