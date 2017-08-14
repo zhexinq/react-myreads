@@ -21,41 +21,37 @@ class BooksApp extends React.Component {
 
   updateBookShelf = (event, book) => {
     const changedShelf = event.target.value
-    var booksToUpdate = this.state.books
+    const bookExistIdx = this.state.books.findIndex( b => b === book )
+    const updatedBooks = this.state.books
+    book.shelf = changedShelf
+    console.log('idx: ' + bookExistIdx)
 
-    console.log(changedShelf)
-    console.log(book)
-    booksToUpdate.map( b => {
-      if (b.id === book.id)
-        b.shelf = changedShelf
-    })
+    bookExistIdx >= 0 ? updatedBooks.splice(bookExistIdx, 1, book) :
+                        updatedBooks.push(book)
 
+    console.log(updatedBooks)
     this.setState({
-      books: booksToUpdate
+      books: updatedBooks
     })
 
     BooksAPI.update(book, changedShelf)
   }
 
+  getBookWithShelfPromise(book) {
+    return new Promise( (resolve) => {
+      BooksAPI.get(book.id).then( b => resolve(b) )
+    } )
+  }
+
   searchBooks = (query) => {
     BooksAPI.search(query, 10).then( books => {
       if (books) {
-        this.setState({
-          searchedBooks: books
+        const getBookPromises = books.map( book => {
+          return this.getBookWithShelfPromise(book).then( b => b )
         })
-
-        books.map( book => {
-          BooksAPI.get(book.id).then( b => {
-            var searched = this.state.searchedBooks
-            searched.map(search => {
-              if (search.id == b.id)
-                search.shelf = b.shelf
-            })
-            this.setState( state => ({
-              searchedBooks: searched
-            }))
-          })
-        })
+        Promise.all(getBookPromises).then( booksWithShelf => {
+          this.setState({ searchedBooks: booksWithShelf })
+        } )
       } else {
         this.setState({
           searchedBooks: []
@@ -63,8 +59,6 @@ class BooksApp extends React.Component {
       }
     })
   }
-
-
 
   render() {
     return (
