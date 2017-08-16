@@ -1,4 +1,4 @@
-# Project Title
+# MyReads
 
 This is the Project I MyReads for Udacity React nanodegree
 
