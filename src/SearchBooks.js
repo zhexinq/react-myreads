@@ -4,9 +4,6 @@ import BookGrid from './BookGrid'
 import { Link } from 'react-router-dom'
 
 class SearchBooks extends Component {
-  state = {
-    query: ''
-  }
   static propTypes = {
     books: PropTypes.array.isRequired,
     onUpdateBookShelf: PropTypes.func.isRequired,
@@ -29,14 +26,10 @@ class SearchBooks extends Component {
               However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
               you don't find a specific author or title. Every search is limited by search terms.
             */}
-            <form onSubmit={ (event) => {
-                event.preventDefault()
-                onSearchBooks(this.state.query)
-              }
-            }>
-              <input type="text" placeholder="Search by title or author" onChange={e => this.setState({
-                query: e.target.value
-              })}/>
+            <form>
+              <input type="text" placeholder="Search by title or author" onChange={e => {
+                onSearchBooks(e.target.value)
+              }}/>
             </form>
           </div>
         </div>

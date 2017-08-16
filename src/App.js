@@ -24,17 +24,15 @@ class BooksApp extends React.Component {
     const bookExistIdx = this.state.books.findIndex( b => b === book )
     const updatedBooks = this.state.books
     book.shelf = changedShelf
-    console.log('idx: ' + bookExistIdx)
 
     bookExistIdx >= 0 ? updatedBooks.splice(bookExistIdx, 1, book) :
                         updatedBooks.push(book)
 
-    console.log(updatedBooks)
-    this.setState({
-      books: updatedBooks
+    BooksAPI.update(book, changedShelf).then( res => {
+      this.setState({
+        books: updatedBooks
+      })
     })
-
-    BooksAPI.update(book, changedShelf)
   }
 
   getBookWithShelfPromise(book) {

@@ -11,7 +11,7 @@ class BookGrid extends Component {
 
   render() {
     const {books, onUpdateBookShelf} = this.props
-    
+
     return  (
       <ol className="books-grid">
         {
@@ -31,7 +31,7 @@ class BookGrid extends Component {
                   </div>
                 </div>
                 <div className="book-title">{book.title}</div>
-                <div className="book-authors">{book.authors}</div>
+                <div className="book-authors">{book.authors ? book.authors.join(', ') : ''}</div>
               </div>
             </li>
           ))
