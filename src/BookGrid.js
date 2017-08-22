@@ -1,27 +1,18 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-class BookGrid extends Component {
-  static propTypes = {
-    books: PropTypes.array.isRequired,
-    onUpdateBookShelf: PropTypes.func.isRequired
-  }
+const BookGrid = props => {
 
-
-
-  render() {
-    const {books, onUpdateBookShelf} = this.props
-
-    return  (
+  return  (
       <ol className="books-grid">
         {
-          books.map( book => (
+          props.books.map( book => (
             <li key={book.id}>
               <div className="book">
                 <div className="book-top">
                   <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
                   <div className="book-shelf-changer">
-                    <select onChange={e => onUpdateBookShelf(e, book)} value={book.shelf}>
+                    <select onChange={e => props.onUpdateBookShelf(e, book)} value={book.shelf}>
                       <option value="none" disabled>Move to...</option>
                       <option value="currentlyReading">Currently Reading</option>
                       <option value="wantToRead">Want to Read</option>
@@ -38,7 +29,6 @@ class BookGrid extends Component {
         }
       </ol>
     )
-  }
 }
 
 export default BookGrid

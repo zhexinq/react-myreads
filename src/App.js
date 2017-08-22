@@ -13,9 +13,7 @@ class BooksApp extends React.Component {
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      this.setState({
-        books: books
-      })
+      this.setState({ books })
     })
   }
 
@@ -35,28 +33,40 @@ class BooksApp extends React.Component {
     })
   }
 
-  getBookWithShelfPromise(book) {
-    return new Promise( (resolve) => {
-      BooksAPI.get(book.id).then( b => resolve(b) )
-    } )
-  }
-
   searchBooks = (query) => {
-    BooksAPI.search(query, 10).then( books => {
+    const intersect = (books1, books2) => {
+      let commons = []
+      books1.forEach(b1 => {
+        books2.forEach(b2 => {
+          if (b1.id === b2.id) {
+            commons = commons.concat([b1])
+          }
+        })
+      })
+      return commons
+    }
+
+    const resetSearchResults = () => {
+      this.setState({
+        searchedBooks: []
+      })
+    }
+
+    if (query === '') {
+      resetSearchResults()
+      return
+    }
+
+    BooksAPI.search(query, 100).then( books => {
       if (books) {
-        const getBookPromises = books.map( book => {
-          return this.getBookWithShelfPromise(book).then( b => b )
-        })
-        Promise.all(getBookPromises).then( booksWithShelf => {
-          this.setState({ searchedBooks: booksWithShelf })
-        } )
+        const searched = intersect(this.state.books, books)
+        this.setState({ searchedBooks: searched})
       } else {
-        this.setState({
-          searchedBooks: []
-        })
+        resetSearchResults()
       }
     })
   }
+
 
   render() {
     return (

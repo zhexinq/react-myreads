@@ -26,11 +26,7 @@ class SearchBooks extends Component {
               However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
               you don't find a specific author or title. Every search is limited by search terms.
             */}
-            <form>
-              <input type="text" placeholder="Search by title or author" onChange={e => {
-                onSearchBooks(e.target.value)
-              }}/>
-            </form>
+            <input type="text" placeholder="Search by title or author" onChange={e => setTimeout(onSearchBooks(e.target.value), 500)}/>
           </div>
         </div>
         <div className="search-books-results">
