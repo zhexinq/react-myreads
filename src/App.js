@@ -35,15 +35,15 @@ class BooksApp extends React.Component {
 
   searchBooks = (query) => {
     const intersect = (books1, books2) => {
-      let commons = []
       books1.forEach(b1 => {
         books2.forEach(b2 => {
           if (b1.id === b2.id) {
-            commons = commons.concat([b1])
+            return
           }
+          b2.shelf = 'none'
         })
       })
-      return commons
+      return books2
     }
 
     const resetSearchResults = () => {

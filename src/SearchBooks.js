@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import BookGrid from './BookGrid'
 import { Link } from 'react-router-dom'
+import { debounce } from 'lodash.debounce';
 
 class SearchBooks extends Component {
   static propTypes = {
@@ -26,7 +27,7 @@ class SearchBooks extends Component {
               However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
               you don't find a specific author or title. Every search is limited by search terms.
             */}
-            <input type="text" placeholder="Search by title or author" onChange={e => setTimeout(onSearchBooks(e.target.value), 500)}/>
+            <input type="text" placeholder="Search by title or author" onChange={e => debounce(onSearchBooks(e.target.value), 500)}/>
           </div>
         </div>
         <div className="search-books-results">
