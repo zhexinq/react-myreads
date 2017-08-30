@@ -19,13 +19,14 @@ class BooksApp extends React.Component {
 
   updateBookShelf = (event, book) => {
     const changedShelf = event.target.value
-    const bookExistIdx = this.state.books.findIndex( b => b === book )
     const updatedBooks = this.state.books
-    book.shelf = changedShelf
-
-    bookExistIdx >= 0 ? updatedBooks.splice(bookExistIdx, 1, book) :
-                        updatedBooks.push(book)
-
+    const bookToBeUpdated = updatedBooks.find(b => b.id === book.id)
+    if (bookToBeUpdated) {
+      bookToBeUpdated.shelf = changedShelf
+    } else {
+      book.shelf = changedShelf
+      updatedBooks.push(book)
+    }
     BooksAPI.update(book, changedShelf).then( res => {
       this.setState({
         books: updatedBooks
@@ -36,12 +37,17 @@ class BooksApp extends React.Component {
   searchBooks = (query) => {
     const intersect = (books1, books2) => {
       books1.forEach(b1 => {
-        books2.forEach(b2 => {
-          if (b1.id === b2.id) {
-            return
-          }
-          b2.shelf = 'none'
-        })
+        if (books2) {
+          books2.forEach(b2 => {
+            if (b1.id === b2.id) {
+              // console.log(b1)
+              b2.shelf = b1.shelf
+            }
+            if (!b2.shelf) {
+              b2.shelf = 'none'
+            }
+          })
+        }
       })
       return books2
     }
@@ -58,7 +64,7 @@ class BooksApp extends React.Component {
     }
 
     BooksAPI.search(query, 100).then( books => {
-      if (books) {
+      if (!books.error) {
         const searched = intersect(this.state.books, books)
         this.setState({ searchedBooks: searched})
       } else {
